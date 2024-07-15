@@ -2,7 +2,7 @@
 Author: chuzeyu 3343447088@qq.com
 Date: 2024-07-01 15:23:46
 LastEditors: chuzeyu 3343447088@qq.com
-LastEditTime: 2024-07-15 13:41:25
+LastEditTime: 2024-07-15 14:06:56
 FilePath: \RoadFindWeb\Route\calculate\routeFitting copy.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -64,12 +64,12 @@ def Re_spline_fit_byXY(x, y, new_params2, new_params1):
         initial_params.append(100)  # 根据实际情况设置初始值
         param_names.append(f'第{i+1}段圆曲线拟合点数')
     print("传回数据",new_params2, new_params1)
-    zero_segments_data, non_zero_segments_data, fits_data, centers = recal_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1)
+    zero_segments_data, non_zero_segments_data, fits_data, centers = Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1)
     return zero_segments_data, non_zero_segments_data, initial_params, fits_data, centers
 
 def return_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled):
     """
-    绘制样条拟合的各段和拟合圆
+    初次计算样条拟合的各段和拟合圆
     
     参数:
     - zero_segments: 零二阶导数的段的列表
@@ -102,9 +102,9 @@ def return_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled):
 
     return zero_segments_data, non_zero_segments_data, fits_data, centers
 
-def recal_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1):
+def Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1):
     """
-    绘制样条拟合的各段和拟合圆
+    重新计算样条拟合的各段和拟合圆
     
     参数:
     - zero_segments: 零二阶导数的段的列表
