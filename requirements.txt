@@ -1,23 +1,40 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: win-64
-asgiref=3.5.2=py312haa95532_0
-bzip2=1.0.8=h2bbff1b_6
-ca-certificates=2024.3.11=haa95532_0
-django=4.1=py312haa95532_0
-expat=2.6.2=hd77b12b_0
-libffi=3.4.4=hd77b12b_1
-openssl=3.0.14=h827c3e9_0
-pip=24.0=py312haa95532_0
-python=3.12.4=h14ffc60_1
-python-tzdata=2023.3=pyhd3eb1b0_0
-setuptools=69.5.1=py312haa95532_0
-sqlite=3.45.3=h2bbff1b_0
-sqlparse=0.4.4=py312haa95532_0
-tk=8.6.14=h0416ee5_0
-tzdata=2024a=h04d1e81_0
-vc=14.2=h2eaa2aa_1
-vs2015_runtime=14.29.30133=h43f2093_3
-wheel=0.43.0=py312haa95532_0
-xz=5.4.6=h8cc25b3_1
-zlib=1.2.13=h8cc25b3_1
+asgiref==3.8.1
+contourpy @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/contourpy_1701817388761/work
+cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
+Django==5.0.6
+django-cors-headers==4.4.0
+djangorestframework==3.15.2
+drf-yasg==1.21.7
+et-xmlfile @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/et_xmlfile_1699500373144/work
+fonttools @ file:///C:/b/abs_f47gnfqnx0/croot/fonttools_1713551644747/work
+inflection==0.5.1
+joblib @ file:///C:/b/abs_f4b98l6lgk/croot/joblib_1718217224240/work
+kiwisolver @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/kiwisolver_1699476425777/work
+matplotlib @ file:///C:/b/abs_ddmsoovv14/croot/matplotlib-suite_1713336426307/work
+mkl-fft @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/mkl_fft_1699473528480/work
+mkl-random @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/mkl_random_1699473588250/work
+mkl-service==2.4.0
+numpy @ file:///C:/b/abs_c1ywpu18ar/croot/numpy_and_numpy_base_1708638681471/work/dist/numpy-1.26.4-cp312-cp312-win_amd64.whl#sha256=becc06674317799ad0165a939a7613809d0bee9bd328a1e4308c57c39cacf08c
+openpyxl @ file:///C:/b/abs_764brjadj1/croot/openpyxl_1714158895873/work
+packaging @ file:///C:/b/abs_cc1h2xfosn/croot/packaging_1710807447479/work
+pandas==2.2.2
+pillow @ file:///C:/b/abs_95ls_qh4c2/croot/pillow_1714398870615/work
+ply @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/ply_1699473999871/work
+pyparsing @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pyparsing_1699476875614/work
+PyQt5==5.15.10
+PyQt5-sip @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pyqt-split_1699478669290/work/pyqt_sip
+python-dateutil @ file:///C:/b/abs_3au_koqnbs/croot/python-dateutil_1716495777160/work
+pytz==2024.1
+PyYAML==6.0.1
+scikit-learn @ file:///C:/b/abs_d6_krvz8aa/croot/scikit-learn_1714164798159/work
+scipy @ file:///C:/b/abs_efv75hqhju/croot/scipy_1717521501389/work/dist/scipy-1.13.1-cp312-cp312-win_amd64.whl#sha256=b29dba691773ea983857b31cad894f31623348583937b6f03783facfd7abc734
+setuptools==69.5.1
+sip @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/sip_1699475590677/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sqlparse @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/sqlparse_1699544474746/work
+threadpoolctl @ file:///C:/b/abs_def0dwqlft/croot/threadpoolctl_1719407816649/work
+tornado @ file:///C:/b/abs_7bua0304mj/croot/tornado_1718740122405/work
+tzdata @ file:///croot/python-tzdata_1690578112552/work
+unicodedata2 @ file:///C:/b/abs_b6apldlg7y/croot/unicodedata2_1713212998255/work
+uritemplate==4.1.1
+wheel==0.43.0

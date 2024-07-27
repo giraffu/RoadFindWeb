@@ -2,7 +2,15 @@
  * @Author: chuzeyu 3343447088@qq.com
  * @Date: 2024-06-28 10:43:04
  * @LastEditors: chuzeyu 3343447088@qq.com
- * @LastEditTime: 2024-07-15 13:43:04
+ * @LastEditTime: 2024-07-22 10:27:41
+ * @FilePath: \routefit-chart-app\src\components\FileUpload.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!--
+ * @Author: chuzeyu 3343447088@qq.com
+ * @Date: 2024-06-28 10:43:04
+ * @LastEditors: chuzeyu 3343447088@qq.com
+ * @LastEditTime: 2024-07-20 10:01:52
  * @FilePath: \RoadFindWeb\routefit-chart-app\src\components\FileUpload.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -56,6 +64,7 @@ export default {
       initialParams: [],
       centers: [],
       lengths: [],
+      tolerances:[],
       types: [],
       chartKey: 0, // 添加一个 key 用于重新渲染 PlotlyChart
     };
@@ -74,7 +83,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/route/upload/",
+          "http://10.137.118.157:8000/route/upload/",
           formData,
           {
             headers: {
@@ -99,7 +108,39 @@ export default {
       try {
         console.log("Sending file path for calculation:", this.filePath); // 调试信息
         const response = await axios.post(
-          "http://localhost:8000/route/calculate/",
+          "http://10.137.118.157:8000/route/calculate/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            
+          }
+        );
+
+        console.log("Calculation response:", response.data); // 调试信息
+        this.chartData = response.data;
+        this.initialParams = response.data.tolerances;
+        this.centers = response.data.centers; // 设置默认中心点位置
+        this.tolerances = response.data.tolerances;//圆曲线容差
+        this.lengths = [...this.initialParams]; // 使用 initial_params 初始化长度数组
+        this.types = new Array(this.initialParams.length).fill("基本对称"); // 设置默认回旋线类型
+        this.renderChart();
+      } catch (error) {
+        console.error("Error calculating data:", error);
+      }
+    },
+
+    async getData() {
+      if (!this.filePath) return;
+
+      const formData = new FormData();
+      formData.append("file_path", this.filePath);
+
+      try {
+        console.log("Sending file path for calculation:", this.filePath); // 调试信息
+        const response = await axios.post(
+          "http://10.137.118.157:8000/route/calculate/",
           formData,
           {
             headers: {
@@ -110,8 +151,9 @@ export default {
 
         console.log("Calculation response:", response.data); // 调试信息
         this.chartData = response.data;
-        this.initialParams = response.data.initial_params;
+        this.initialParams = response.data.tolerances;
         this.centers = response.data.centers; // 设置默认中心点位置
+        this.tolerances = response.data.tolerances;//圆曲线容差
         this.lengths = [...this.initialParams]; // 使用 initial_params 初始化长度数组
         this.types = new Array(this.initialParams.length).fill("基本对称"); // 设置默认回旋线类型
         this.renderChart();
@@ -119,7 +161,6 @@ export default {
         console.error("Error calculating data:", error);
       }
     },
-
     async updateChart() {
       // 重新计算的逻辑
       const recalculationData = {
@@ -130,7 +171,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/route/recalculate/",
+          "http://10.137.118.157:8000/route/recalculate/",
           recalculationData,
           {
             headers: {

@@ -2,7 +2,7 @@
 Author: chuzeyu 3343447088@qq.com
 Date: 2024-07-01 15:23:46
 LastEditors: chuzeyu 3343447088@qq.com
-LastEditTime: 2024-07-15 14:06:56
+LastEditTime: 2024-07-23 09:04:36
 FilePath: \RoadFindWeb\Route\calculate\routeFitting copy.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -20,7 +20,8 @@ def Spline_fit_byXY(x, y):
     - 无，直接绘制插值曲线
     """
     # 归一化 x 和 y 坐标
-    x_scaled, y_scaled = normal_method(x, y)
+    x_scaled, y_scaled, x_min, x_max, y_min, y_max = normalize(x, y)
+
     # 根据选择的方法进行样条插值
     f = interpolate(x_scaled, y_scaled)
     y_prime, y_second, y_third = compute_derivatives(f, x_scaled)
@@ -32,12 +33,21 @@ def Spline_fit_byXY(x, y):
         initial_params.append(100)  # 根据实际情况设置初始值
         param_names.append(f'第{i+1}段圆曲线拟合点数')
 
-    zero_segments_data, non_zero_segments_data, fits_data, centers = return_spline_fit_segments(
+    zero_segments_data, non_zero_segments_data, fits_data, centers, consistent_curvature_indices = return_spline_fit_segments(
         zero_segments, 
         non_zero_segments, 
         f, 
-        x_scaled)
-    return zero_segments_data, non_zero_segments_data, initial_params, fits_data, centers
+        x_scaled, x_min, x_max, y_min, y_max)
+    
+    # 对 zero_segments_data 进行反归一化
+    zero_segments_data['x'] = [denormalize(np.array(x), np.array([0] * len(x)), x_min, x_max, y_min, y_max)[0].tolist() for x in zero_segments_data['x']]
+    zero_segments_data['y'] = [denormalize(np.array([0] * len(y)), np.array(y), x_min, x_max, y_min, y_max)[1].tolist() for y in zero_segments_data['y']]
+    
+    # 对 non_zero_segments_data 进行反归一化
+    non_zero_segments_data['x'] = [denormalize(np.array(x), np.array([0] * len(x)), x_min, x_max, y_min, y_max)[0].tolist() for x in non_zero_segments_data['x']]
+    non_zero_segments_data['y'] = [denormalize(np.array([0] * len(y)), np.array(y), x_min, x_max, y_min, y_max)[1].tolist() for y in non_zero_segments_data['y']]
+
+    return zero_segments_data, non_zero_segments_data, initial_params, fits_data, centers, consistent_curvature_indices
 
 def Re_spline_fit_byXY(x, y, new_params2, new_params1):
     """
@@ -51,7 +61,8 @@ def Re_spline_fit_byXY(x, y, new_params2, new_params1):
     - 无，直接绘制插值曲线
     """
     # 归一化 x 和 y 坐标
-    x_scaled, y_scaled = normal_method(x, y)
+    x_scaled, y_scaled, x_min, x_max, y_min, y_max = normalize(x, y)
+    #x_scaled, y_scaled = move_method(x, y)
     
     # 根据选择的方法进行样条插值
     f = interpolate(x_scaled, y_scaled)
@@ -63,11 +74,25 @@ def Re_spline_fit_byXY(x, y, new_params2, new_params1):
     for i, segment in enumerate(non_zero_segments):
         initial_params.append(100)  # 根据实际情况设置初始值
         param_names.append(f'第{i+1}段圆曲线拟合点数')
-    print("传回数据",new_params2, new_params1)
-    zero_segments_data, non_zero_segments_data, fits_data, centers = Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1)
-    return zero_segments_data, non_zero_segments_data, initial_params, fits_data, centers
 
-def return_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled):
+    zero_segments_data, non_zero_segments_data, fits_data, centers, consistent_curvature_indices = Re_spline_fit_segments(
+        zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1, x_min, x_max, y_min, y_max)
+    
+    # 对 zero_segments_data 进行反归一化
+    zero_segments_data['x'] = [denormalize(np.array(x), np.array([0] * len(x)), x_min, x_max, y_min, y_max)[0].tolist() for x in zero_segments_data['x']]
+    zero_segments_data['y'] = [denormalize(np.array([0] * len(y)), np.array(y), x_min, x_max, y_min, y_max)[1].tolist() for y in zero_segments_data['y']]
+    
+    # 对 non_zero_segments_data 进行反归一化
+    non_zero_segments_data['x'] = [denormalize(np.array(x), np.array([0] * len(x)), x_min, x_max, y_min, y_max)[0].tolist() for x in non_zero_segments_data['x']]
+    non_zero_segments_data['y'] = [denormalize(np.array([0] * len(y)), np.array(y), x_min, x_max, y_min, y_max)[1].tolist() for y in non_zero_segments_data['y']]
+    
+    # 对 fits_data 进行反归一化
+    # fits_data['x'] = [denormalize(np.array(x), np.array([0] * len(x)), x_min, x_max, y_min, y_max)[0].tolist() for x in fits_data['x']]
+    # fits_data['y'] = [denormalize(np.array([0] * len(y)), np.array(y), x_min, x_max, y_min, y_max)[1].tolist() for y in fits_data['y']]
+    
+    return zero_segments_data, non_zero_segments_data, initial_params, fits_data, centers, consistent_curvature_indices
+
+def return_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, x_min, x_max, y_min, y_max):
     """
     初次计算样条拟合的各段和拟合圆
     
@@ -95,14 +120,20 @@ def return_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled):
         y_segment = f(x_segment)
         non_zero_segments_data['x'].append(x_segment.tolist())
         non_zero_segments_data['y'].append(y_segment.tolist())
-    initial_params = [100] * len(non_zero_segments)
+
+    # 合并两个列表并添加标记
+    combined_segments = [(segment, 'zero') for segment in zero_segments] + \
+                        [(segment, 'non_zero') for segment in non_zero_segments]
+    # 按照段的开始索引排序
+    combined_segments.sort(key=lambda x: x[0][0])
+
     # 计算拟合曲线的数据
-    x_fits, y_fits, errors, centers = non_zero_segments_calculator(x_scaled, f, non_zero_segments, initial_params, None)
+    x_fits, y_fits, tolerances, centers = non_zero_segments_calculator(x_scaled, f, combined_segments, None, None, x_min, x_max, y_min, y_max, type="基本对称", type1="")
     fits_data = {'x': [x.tolist() for x in x_fits], 'y': [y.tolist() for y in y_fits]}
 
-    return zero_segments_data, non_zero_segments_data, fits_data, centers
+    return zero_segments_data, non_zero_segments_data, fits_data, centers, tolerances
 
-def Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1):
+def Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_params2, new_params1, x_min, x_max, y_min, y_max):
     """
     重新计算样条拟合的各段和拟合圆
     
@@ -132,8 +163,14 @@ def Re_spline_fit_segments(zero_segments, non_zero_segments, f, x_scaled, new_pa
         non_zero_segments_data['x'].append(x_segment.tolist())
         non_zero_segments_data['y'].append(y_segment.tolist())
 
-    x_fits, y_fits, errors, centers = non_zero_segments_calculator(x_scaled, f, non_zero_segments, new_params2, new_params1)
+    # 合并两个列表并添加标记
+    combined_segments = [(segment, 'zero') for segment in zero_segments] + \
+                        [(segment, 'non_zero') for segment in non_zero_segments]
+    # 按照段的开始索引排序
+    combined_segments.sort(key=lambda x: x[0][0])
+
+    x_fits, y_fits, tolerances, centers = non_zero_segments_calculator(x_scaled, f, combined_segments, new_params2, new_params1, x_min, x_max, y_min, y_max, type="基本对称", type1="")
 
     fits_data = {'x': [x.tolist() for x in x_fits], 'y': [y.tolist() for y in y_fits]}
 
-    return zero_segments_data, non_zero_segments_data, fits_data, centers
+    return zero_segments_data, non_zero_segments_data, fits_data, centers, tolerances
